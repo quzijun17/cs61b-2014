@@ -1,5 +1,6 @@
-/* SList.java */
-
+/**
+ * Created by ZijunQu on 16/6/8.
+ */
 /**
  *  The SList class is a singly-linked implementation of the linked list
  *  abstraction.  SLists are mutable data structures, which can grow at either
@@ -10,9 +11,8 @@
 
 public class SList {
 
-    private SListNode head; // first node in list.
-    private SListNode tail; //add tail to make insertEnd run in constant time
-    private int size;  // Number of items in list.
+    private SListNode head;
+    private int size;
 
     /**
      *  SList() constructs an empty list.
@@ -21,7 +21,6 @@ public class SList {
     public SList() {
         size = 0;
         head = null;
-        tail = null;
     }
 
     /**
@@ -49,9 +48,6 @@ public class SList {
 
     public void insertFront(Object obj) {
         head = new SListNode(obj, head);
-        if (tail == null) {
-            tail = head;
-        }
         size++;
     }
 
@@ -59,7 +55,6 @@ public class SList {
      *  insertEnd() inserts item "obj" at the end of this list.
      *  @param obj the item to be inserted.
      **/
-    /*
 
     public void insertEnd(Object obj) {
         if (head == null) {
@@ -70,17 +65,6 @@ public class SList {
                 node = node.next;
             }
             node.next = new SListNode(obj);
-        }
-        size++;
-    }
-    */
-    public void insertEnd(Object obj) {
-        if (tail == null) {
-            tail = new SListNode(obj);
-            head = tail;
-        } else {
-            tail.next = new SListNode(obj, null);
-            tail = tail.next;
         }
         size++;
     }
@@ -112,6 +96,64 @@ public class SList {
     }
 
     /**
+     *  squish() takes this list and, wherever two or more consecutive items are
+     *  equals(), it removes duplicate nodes so that only one consecutive copy
+     *  remains.  Hence, no two consecutive items in this list are equals() upon
+     *  completion of the procedure.
+     *
+     *  After squish() executes, the list may well be shorter than when squish()
+     *  began.  No extra items are added to make up for those removed.
+     *
+     *  For example, if the input list is [ 0 0 0 0 1 1 0 0 0 3 3 3 1 1 0 ], the
+     *  output list is [ 0 1 0 3 1 0 ].
+     *
+     *  IMPORTANT:  Be sure you use the equals() method, and not the "=="
+     *  operator, to compare items.
+     **/
+
+    public void squish() {
+        // Fill in your solution here.  (Ours is eleven lines long.)
+        if (head == null) {
+            return;
+        }
+        SListNode preNode = head;
+        SListNode currNode = head.next;
+        while (currNode != null) {
+            if (currNode.item.equals(preNode.item)) {
+                preNode.next = currNode.next;
+                this.size--;
+            } else {
+                preNode = currNode;
+            }
+            currNode = currNode.next;
+        }
+
+
+    }
+
+    /**
+     *  twin() takes this list and doubles its length by replacing each node
+     *  with two consecutive nodes referencing the same item.
+     *
+     *  For example, if the input list is [ 3 7 4 2 2 ], the
+     *  output list is [ 3 3 7 7 4 4 2 2 2 2 ].
+     *
+     *  IMPORTANT:  Do not try to make new copies of the items themselves.
+     *  Make new SListNodes, but just copy the references to the items.
+     **/
+
+    public void twin() {
+        SListNode currNode = head;
+        while (currNode != null) {
+            SListNode duplicateNode = new SListNode(currNode.item, currNode.next);
+            currNode.next = duplicateNode;
+            currNode = duplicateNode.next;
+            this.size++;
+        }
+        // Fill in your solution here.  (Ours is seven lines long.)
+    }
+
+    /**
      *  toString() converts the list to a String.
      *  @return a String representation of the list.
      **/
@@ -140,15 +182,6 @@ public class SList {
      **/
 
     public static void main (String[] args) {
-        // Fill in your solution for Part I here.
-        SList list1 = new SList();
-        list1.insertFront(new Integer(9));
-        list1.insertEnd(new Integer(12));
-        list1.insertFront(new Integer(6));
-        list1.insertFront(new Integer(3));
-        list1.insertEnd(new Integer(15));
-        System.out.println("Here is the List: " + list1);
-
         testEmpty();
         testAfterInsertFront();
         testAfterInsertEnd();
@@ -209,7 +242,7 @@ public class SList {
                 "InsertFronts on non-empty list failed");
         System.out.println("isEmpty() should be false. It is: " +
                 lst1.isEmpty());
-        TestHelper.verify(!lst1.isEmpty(),
+        TestHelper.verify(lst1.isEmpty() == false,
                 "isEmpty() after insertFront failed");
         System.out.println("length() should be 3. It is: " +
                 lst1.length());
